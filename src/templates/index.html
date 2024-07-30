@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello, Flask!</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .answer-maring-top {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Choose file</label>
+                <input type="file" class="form-control-file" id="file" name="file">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+
+        <div class="row justify-left" style="margin: 10px 0 10px 0;">
+            <label class="col-md-2">Enter Text</label>
+            <input id="text" type="text" class="text col-md-7">
+        </div>
+
+        <div class="row">
+            <input type="button" value="Ask" id="myButton" class="btn btn-primary col-md-12 mt-10">
+        </div>
+
+        <div id="answer-box">
+
+        </div>
+    </div>
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#uploadForm').submit(function(event){
+                event.preventDefault();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '/upload',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response){
+                        $('#message').text(response.message);
+                    },
+                    error: function(error){
+                        console.log('Error:', error);
+                        $('#message').text('An error occurred.');
+                    }
+                });
+            });
+            function askQuestion() {
+                $.ajax({
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        'question': $('#text').val()
+                    }),
+                    datatype: 'json',
+                    url: '/ask',
+
+                    success: function (data) {
+
+                        $('#answer-box').append('<label class="answer-maring-top" style="float:right" >' + $('#text').val() + '</label> </br>');
+                        $('#answer-box').append('<label class="answer-maring-top" style="float:left" >' + data.answer + '</label> </br>');
+                        $('#text').val(' ');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+
+                        console.log(textStatus, errorThrown);
+                    }
+                });
+            }
+
+
+            $("#text").on("keypress", function (e) {
+                if (e.which == 13) {
+                    askQuestion();
+                }
+            });
+            $('#myButton').click(function () {
+                askQuestion()
+
+
+            });
+        });
+    </script>
+</body>
+
+</html>
