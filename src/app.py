@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, render_template
 from PyPDF2 import PdfReader
 
 # Set your OpenAI API key
-openai.api_key = os.getenv('OPENAI_API_KEY')# "sk-None-eYc8wX1bxZwlSVo6QlxjT3BlbkFJTY1wZHHOrRTaBBDw5g6k"
+openai.api_key = "sk-None-eYc8wX1bxZwlSVo6QlxjT3BlbkFJTY1wZHHOrRTaBBDw5g6k"
 
 
 app = Flask(__name__)
